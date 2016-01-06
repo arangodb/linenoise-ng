@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-project(linenoise)
+project(linenoise-ng)
 
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
 
@@ -76,15 +76,16 @@ include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 
 # build liblinenoise
 add_library(
-  linenoise
-  STATIC
+  linenoise-ng
+  SHARED
+#STATIC
   src/ConvertUTF.cpp
   src/linenoise.cpp
   src/wcwidth.cpp
 )
 
 # install
-install(TARGETS linenoise DESTINATION lib)
+install(TARGETS linenoise-ng DESTINATION lib)
 
 # headers
 install(FILES include/linenoise.h DESTINATION include)
@@ -97,7 +98,7 @@ add_executable(
 
 target_link_libraries(
   example
-  linenoise
+  linenoise-ng
 )
 
 # packaging
@@ -116,5 +117,5 @@ set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 
 set(CPACK_STRIP_FILES "ON")
 
-set(CPACK_PACKAGE_NAME "linenoise")
+set(CPACK_PACKAGE_NAME "linenoise-ng")
 set(CPACK_DEBIAN_PACKAGE_SECTION "utilities")

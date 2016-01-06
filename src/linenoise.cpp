@@ -2554,7 +2554,7 @@ int InputBuffer::getInputLine(PromptBase& pi) {
                 killRing.lastAction = KillRing::actionKill;
                 break;
 
-            case ctrlChar('J'):  // ctrl-J/linefeed/newline, accept line
+            //case ctrlChar('J'):  // ctrl-J/linefeed/newline, accept line
             case ctrlChar('M'):  // ctrl-M/return/enter
                 killRing.lastAction = KillRing::actionOther;
                 // we need one last refresh with the cursor at the end of the line
@@ -2828,12 +2828,12 @@ int InputBuffer::getInputLine(PromptBase& pi) {
             default:
                 killRing.lastAction = KillRing::actionOther;
                 historyRecallMostRecent = false;
-                if (c & (META | CTRL)) {  // beep on unknown Ctrl and/or Meta keys
+                if (c & (META | CTRL) && !(c==ctrlChar('J'))) {  // beep on unknown Ctrl and/or Meta keys
                     beep();
                     break;
                 }
                 if (len < buflen) {
-                    if (isControlChar(c)) {  // don't insert control characters
+                    if (isControlChar(c) && !(c==ctrlChar('J'))) {  // don't insert control characters
                         beep();
                         break;
                     }
