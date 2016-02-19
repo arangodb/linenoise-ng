@@ -38,7 +38,6 @@ int main (int argc, char** argv) {
   printf("starting...\n");
 
   char const* prompt = "\x1b[1;32mlinenoise\x1b[0m> ";
-
   while (1) {
     char* result = linenoise(prompt);
 
