@@ -44,6 +44,8 @@
 extern "C" {
 #endif
 
+typedef void (lineNoiseBindkeyFunction)(void);
+
 typedef struct linenoiseCompletions linenoiseCompletions;
 
 typedef void(linenoiseCompletionCallback)(const char*, linenoiseCompletions*);
@@ -61,6 +63,8 @@ void linenoiseHistoryFree(void);
 void linenoiseClearScreen(void);
 void linenoiseSetMultiLine(int ml);
 void linenoisePrintKeyCodes(void);
+int linenoiseBindkeyAdd(int key, lineNoiseBindkeyFunction *fn);
+int linenoiseBindkeyRemove(int key);
 /* the following is extension to the original linenoise API */
 int linenoiseInstallWindowChangeHandler(void);
 
