@@ -126,10 +126,12 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 
 using std::string;
 using std::vector;
+using std::unordered_map;
 using std::unique_ptr;
 using namespace linenoise_ng;
 
@@ -918,6 +920,7 @@ static const int PAGE_DOWN_KEY = 0x11200000;
 
 static const char* unsupported_term[] = {"dumb", "cons25", "emacs", NULL};
 static linenoiseCompletionCallback* completionCallback = NULL;
+static unordered_map<int, lineNoiseBindkeyFunction *> bindKeyFunctions;
 
 #ifdef _WIN32
 static HANDLE console_in, console_out;
@@ -1771,6 +1774,7 @@ static char32_t linenoiseReadChar(void) {
     } else if (rec.Event.KeyEvent.uChar.UnicodeChar ==
                ctrlChar('[')) {  // ESC, set flag for later
       escSeen = true;
+      return modifierKeys | rec.Event.KeyEvent.uChar.UnicodeChar;
       continue;
     } else {
       // we got a real character, return it
@@ -1879,6 +1883,10 @@ static int cleanupCtrl(int c) {
     if (d >= ctrlChar('A') && d <= ctrlChar('Z')) {
       c = c & ~CTRL;
     }
+  }
+  auto found = bindKeyFunctions.find(c);
+  if (found != bindKeyFunctions.end()){
+    found->second();
   }
   return c;
 }
@@ -3367,5 +3375,25 @@ int linenoiseInstallWindowChangeHandler(void) {
     return errno;
   }
 #endif
+  return 0;
+}
+
+int linenoiseBindkeyAdd(int key, lineNoiseBindkeyFunction *fn)
+{ 
+  if (bindKeyFunctions.find(key) != bindKeyFunctions.end()){
+    // the key is already bound
+    return -1;
+  }
+  bindKeyFunctions.insert(std::make_pair(key, fn));
+  return 0; 
+}
+
+int linenoiseBindkeyRemove(int key)
+{
+  if (bindKeyFunctions.find(key) == bindKeyFunctions.end()){
+    // Key is not bound
+    return -1;
+  }
+  bindKeyFunctions.erase(key);
   return 0;
 }
