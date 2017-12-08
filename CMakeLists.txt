@@ -12,6 +12,8 @@ endif()
 
 message(STATUS "Build mode: ${CMAKE_BUILD_TYPE}")
 
+option(BUILD_EXAMPLES "Enable examples" ON)
+
 # INFO
 set(LINENOISE_VERSION "1.0.0" CACHE path "Linenoise version")
 set(LINENOISE_DISPLAY_NAME "Linenoise-NG")
@@ -90,15 +92,17 @@ install(TARGETS linenoise DESTINATION lib)
 install(FILES include/linenoise.h DESTINATION include)
 
 # build example
-add_executable(
-  example
-  tst/example.c
-)
+if(BUILD_EXAMPLES)
+  add_executable(
+    example
+    tst/example.c
+  )
 
-target_link_libraries(
-  example
-  linenoise
-)
+  target_link_libraries(
+    example
+    linenoise
+  )
+endif(BUILD_EXAMPLES)
 
 # packaging
 include(CPack)
