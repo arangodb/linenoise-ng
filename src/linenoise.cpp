@@ -3315,8 +3315,7 @@ int linenoiseHistorySetMaxLen(int len) {
     if (len < tocopy) {
       tocopy = len;
     }
-    memcpy(newHistory, history + historyMaxLen - tocopy,
-           sizeof(char8_t*) * tocopy);
+    memcpy(newHistory, history, sizeof(char8_t*) * tocopy);
     free(history);
     history = newHistory;
   }
@@ -3342,8 +3341,13 @@ int linenoiseHistorySave(const char* filename) {
 #if _WIN32
   FILE* fp = fopen(filename, "wt");
 #else
-  int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
 
+#if defined(__FreeBSD__)
+  int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY);
+#else
+  int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
+#endif
+    
   if (fd < 0) {
     return -1;
   }
@@ -3355,10 +3359,13 @@ int linenoiseHistorySave(const char* filename) {
     return -1;
   }
 
-  for (int j = 0; j < historyLen; ++j) {
-    if (history[j][0] != '\0') {
-      fprintf(fp, "%s\n", history[j]);
-    }
+  for (int j = 0; j < historyLen; ++j)
+  {
+      if (history[j]) {
+          if (history[j][0] != '\0') {
+              fprintf(fp, "%s\n", history[j]);
+          }
+      }
   }
 
   fclose(fp);
