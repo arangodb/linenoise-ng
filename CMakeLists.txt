@@ -72,7 +72,10 @@ else()
 
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
+set(LINENOISE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(LINENOISE_INCLUDE_DIR ${LINENOISE_INCLUDE_DIR} PARENT_SCOPE)
+
+include_directories(${LINENOISE_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/src)
 
 # build liblinenoise
 add_library(
