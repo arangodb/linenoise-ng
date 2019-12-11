@@ -624,7 +624,20 @@ struct PromptBase {            // a convenience struct for grouping prompt info
   int promptPreviousLen;       // help erasing
   int promptErrorCode;         // error code (invalid UTF-8) or zero
 
-  PromptBase() : promptPreviousInputLen(0) {}
+  PromptBase() :
+    promptText(0),
+    promptCharWidths(nullptr),
+    promptChars(0),
+    promptBytes(0),
+    promptExtraLines(0),
+    promptIndentation(0),
+    promptLastLinePosition(0),
+    promptPreviousInputLen(0),
+    promptCursorRowOffset(0),
+    promptScreenColumns(0),
+    promptPreviousLen(0),
+    promptErrorCode(0)
+  {}
 
   bool write() {
     if (write32(1, promptText.get(), promptBytes) == -1) return false;
@@ -727,7 +740,7 @@ struct DynamicPrompt : public PromptBase {
   int direction;           // current search direction, 1=forward, -1=reverse
 
   DynamicPrompt(PromptBase& pi, int initialDirection)
-      : searchTextLen(0), direction(initialDirection) {
+      : searchCharWidths(nullptr), searchTextLen(0), direction(initialDirection) {
     promptScreenColumns = pi.promptScreenColumns;
     promptCursorRowOffset = 0;
     Utf32String emptyString(1);
