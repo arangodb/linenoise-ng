@@ -62,7 +62,7 @@ variable when invoking `make install`:
 (cd build && make DESTDIR=/tmp install)
 ```
 
-To build the library on Windows, use these commands in an MS-DOS command 
+To build the library on Windows, use these commands in a `cmd` command 
 prompt:
 
 ```
